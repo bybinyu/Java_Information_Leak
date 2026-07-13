@@ -1,0 +1,28 @@
+# 编译产物
+target/
+*.jar
+*.war
+*.class
+
+# IDE 文件
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+
+# 演示用的 git 备份目录（非真实 .git，仅用于漏洞演示）
+.git_backup/
+
+# 临时目录
+.codex/
+.agents/
+**/.codex-plugin/
+**/.codex-env/

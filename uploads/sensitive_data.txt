@@ -1,0 +1,32 @@
+=================================================================
+                       敏感数据备忘
+                       (内部使用 · 请勿外传)
+=================================================================
+
+1. 数据库连接信息
+   - 地址: 192.168.1.100:3306
+   - 库名: production_db
+   - 用户名: root
+   - 密码: P@ssw0rd_2024_secret!
+
+2. 内部 API Token
+   - payment-service: pk_live_AbCdEfGhIjKlMnOpQrStUvWx
+   - notification-service: ntf_token_2024_secure
+   - log-service: log_token_do_not_share
+
+3. SSH 密钥路径
+   - /home/deploy/.ssh/id_rsa
+   - /root/.ssh/authorized_keys
+
+4. 第三方服务凭证
+   - 短信平台: sms_user / Sms@2024!
+   - 邮件服务: mailer@company.com / MailerP@ss
+   - 对象存储: oss_key_AKIDxxxxxxxx / oss_secret_xxxxxxxx
+
+5. 内部网络信息
+   - VPN 地址: vpn.company-internal.com
+   - 跳板机: 10.0.0.1:2222
+   - K8s Master: 10.0.0.10:6443
+   - 监控面板: http://grafana.internal:3000 (admin / admin)
+
+============= 请立即删除该文件！确认后再读一遍。 =============
