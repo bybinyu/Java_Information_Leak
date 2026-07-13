@@ -1,0 +1,9 @@
+API Specification v2.0
+
+Endpoints:
+- GET /api/users - List users
+- GET /api/articles - List articles
+- GET /api/attachments/download - Download files
+- POST /api/attachments/upload - Upload files
+
+Authentication: Planned (not yet implemented)

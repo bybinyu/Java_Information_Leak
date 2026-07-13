@@ -1,0 +1,11 @@
+Server Configuration Backup
+Date: 2024-12-20
+
+Host: 192.168.1.100
+OS: Ubuntu 22.04 LTS
+Deploy User: deploy / D3ploy!Pass
+App Path: /opt/app/knowledge-base
+Log Path: /var/log/knowledge-base
+
+Startup Command:
+cd /opt/app/knowledge-base && git pull && ./restart.sh
