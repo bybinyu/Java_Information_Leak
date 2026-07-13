@@ -29,3 +29,21 @@ spring:
         cachecontrol:
           max-age: 0
       add-mappings: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+# ============================================
+# Actuator — debug endpoints (enable with caution)
+# ============================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: env,configprops,beans
+  endpoint:
+    env:
+      show-values: always

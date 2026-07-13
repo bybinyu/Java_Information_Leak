@@ -55,7 +55,13 @@ public class AttachmentService {
     }
 
     public Resource downloadFile(String path) throws IOException {
-        Path filePath = uploadDir.resolve(path);
+        Path filePath = uploadDir.resolve(path).normalize();
+
+        // ===== 校验解析后的路径仍在 uploadDir 内 =====
+        if (!filePath.startsWith(uploadDir)) {
+            throw new RuntimeException("Access denied: invalid file path");
+        }
+
         if (!Files.exists(filePath) || !Files.isReadable(filePath)) {
             throw new RuntimeException("File not found: " + path);
         }
