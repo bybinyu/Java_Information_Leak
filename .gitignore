@@ -1,27 +1,29 @@
-# 编译产物
+# Build output
 target/
 *.jar
 *.war
 *.class
 
-# IDE 文件
+# IDE files
 .idea/
 *.iml
 .vscode/
 *.swp
-*.swo
 
-# 系统文件
+# OS files
 .DS_Store
 Thumbs.db
 
-# 日志
+# Logs
 *.log
 
-# 演示用的 git 备份目录（非真实 .git，仅用于漏洞演示）
+# H2 database files
+data/
+
+# Git backup (demo only, remove in production)
 .git_backup/
 
-# 临时目录
+# Codex workspace
 .codex/
 .agents/
 **/.codex-plugin/

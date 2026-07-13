@@ -1,67 +1,169 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>信息泄露漏洞演示系统</title>
+    <title>Knowledge Base</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; padding: 40px 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        h1 { font-size: 28px; margin-bottom: 8px; }
-        .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
-        .card { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .card h2 { font-size: 18px; margin-bottom: 12px; color: #d32f2f; }
-        .card p, .card ul { font-size: 14px; color: #555; }
-        .card ul { padding-left: 20px; }
-        .card ul li { margin-bottom: 6px; }
-        .card ul li a { color: #1976d2; text-decoration: none; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+               background: #f0f2f5; color: #1a1a2e; }
+        .app { display: flex; min-height: 100vh; }
+        .sidebar { width: 240px; background: #1a1a2e; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; }
+        .main { flex: 1; display: flex; flex-direction: column; }
+        .header { background: #fff; padding: 0 32px; height: 60px; display: flex; align-items: center;
+                  justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .content { padding: 28px 32px; flex: 1; }
+        .sidebar-brand { padding: 20px 20px 24px; font-size: 18px; font-weight: 600;
+                         border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+        .sidebar-nav { padding: 12px 0; flex: 1; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: rgba(255,255,255,0.65);
+                         text-decoration: none; font-size: 14px; transition: all 0.15s; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background: rgba(255,255,255,0.08); color: #fff; }
+        .sidebar-section { padding: 16px 20px 6px; font-size: 11px; text-transform: uppercase;
+                           letter-spacing: 1px; color: rgba(255,255,255,0.35); }
+        .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.08);
+                          font-size: 12px; color: rgba(255,255,255,0.4); }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .header-right { display: flex; align-items: center; gap: 16px; font-size: 14px; color: #666; }
+        .header-right a { color: #4f46e5; text-decoration: none; font-size: 13px; }
+        .header-right a:hover { text-decoration: underline; }
+        .page-title { font-size: 22px; font-weight: 600; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .stat-card .stat-label { font-size: 13px; color: #888; margin-bottom: 8px; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: #1a1a2e; }
+        .stat-card .stat-icon { font-size: 24px; margin-bottom: 8px; }
+        .card { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
+        .card p, .card li { font-size: 14px; color: #555; line-height: 1.7; }
+        .card ul { list-style: none; }
+        .card ul li { padding: 6px 0; }
+        .card ul li a { color: #4f46e5; text-decoration: none; }
         .card ul li a:hover { text-decoration: underline; }
-        .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
-        .tag-danger { background: #ffebee; color: #c62828; }
-        .tag-warn { background: #fff3e0; color: #e65100; }
-        .tag-info { background: #e3f2fd; color: #1565c0; }
-        .footer { text-align: center; color: #999; font-size: 12px; margin-top: 40px; }
+        .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border-radius: 6px;
+               font-size: 14px; font-weight: 500; text-decoration: none; transition: all 0.15s; cursor: pointer; }
+        .btn-primary { background: #4f46e5; color: #fff; border: none; }
+        .btn-primary:hover { background: #4338ca; }
+        .btn-outline { background: transparent; color: #4f46e5; border: 1px solid #4f46e5; }
+        .btn-outline:hover { background: #f5f3ff; }
+        .btn-sm { padding: 6px 14px; font-size: 13px; }
+        .badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+        .badge-blue { background: #eef2ff; color: #4338ca; }
+        .badge-green { background: #ecfdf5; color: #059669; }
+        .badge-orange { background: #fff7ed; color: #ea580c; }
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar-brand span:not(:first-child), .sidebar-nav a span, .sidebar-section, .sidebar-footer { display: none; }
+            .sidebar-brand { justify-content: center; padding: 16px; }
+            .sidebar-nav a { justify-content: center; padding: 12px; }
+            .content { padding: 20px 16px; }
+            .header { padding: 0 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>文件管理系统</h1>
-    <p class="subtitle">企业内部文档管理平台 · 仅供内部使用</p>
-
-    <div class="card">
-        <h2>系统 API 文档</h2>
-        <ul>
-            <li><a href="/swagger-ui/index.html" target="_blank">Swagger UI（查看全部 API 文档）</a></li>
-            <li><a href="/v3/api-docs" target="_blank">OpenAPI JSON 规范</a></li>
-        </ul>
+<div class="app">
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <span>&#128218;</span>
+            <span>KB Platform</span>
+        </div>
+        <div class="sidebar-nav">
+            <div class="sidebar-section">Main</div>
+            <a href="/" class="active"><span>&#127968;</span><span>Dashboard</span></a>
+            <a href="/swagger-ui/index.html" target="_blank"><span>&#128220;</span><span>API Reference</span></a>
+            <div class="sidebar-section">Data</div>
+            <a href="/api/articles" target="_blank"><span>&#128214;</span><span>Articles</span></a>
+            <a href="/api/users" target="_blank"><span>&#128101;</span><span>Users</span></a>
+            <a href="/api/attachments" target="_blank"><span>&#128206;</span><span>Attachments</span></a>
+            <div class="sidebar-section">Tools</div>
+            <a href="/h2-console" target="_blank"><span>&#128451;</span><span>DB Console</span></a>
+            <a href="/uploads/" target="_blank"><span>&#128193;</span><span>File Browser</span></a>
+        </div>
+        <div class="sidebar-footer">v2.0.0 &middot; Internal</div>
     </div>
-
-    <div class="card">
-        <h2>功能入口</h2>
-        <ul>
-            <li><a href="/api/users">用户列表 API</a></li>
-            <li><a href="/api/files/list">文件列表 API</a></li>
-            <li><a href="/api/files/list?dir=../../../etc">目录遍历演示（列出 /etc 目录）</a></li>
-            <li><a href="/api/files/download?path=../../../etc/passwd">目录遍历演示（下载 /etc/passwd）</a></li>
-        </ul>
-    </div>
-
-    <div class="card">
-        <h2>安全风险提示</h2>
-        <p>本系统 <strong>故意包含</strong> 以下安全漏洞，仅供安全教学演示使用：</p>
-        <ul>
-            <li><span class="tag tag-danger">Swagger</span> Swagger UI 未授权访问，API 接口和数据模型完全暴露</li>
-            <li><span class="tag tag-danger">.git</span> .git 目录可通过 Web 访问，源码和提交历史泄露</li>
-            <li><span class="tag tag-danger">目录遍历</span> 文件下载接口未做路径校验，可读取任意文件</li>
-            <li><span class="tag tag-warn">敏感配置</span> 数据库中包含硬编码密码和密钥</li>
-            <li><span class="tag tag-info">信息泄露</span> 用户接口返回明文密码等敏感字段</li>
-        </ul>
-    </div>
-
-    <div class="footer">
-        安全漏洞演示系统 · 请勿在生产环境中使用
+    <div class="main">
+        <div class="header">
+            <div class="header-left">
+                <div class="page-title" style="font-size:18px;margin:0;">Knowledge Base</div>
+            </div>
+            <div class="header-right">
+                <span>Welcome, <strong>Admin</strong></span>
+                <a href="/swagger-ui/index.html" target="_blank">API Docs</a>
+            </div>
+        </div>
+        <div class="content">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-icon">&#128214;</div>
+                    <div class="stat-label">Knowledge Articles</div>
+                    <div class="stat-value" id="statArticles">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">&#128101;</div>
+                    <div class="stat-label">Team Members</div>
+                    <div class="stat-value" id="statUsers">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">&#128206;</div>
+                    <div class="stat-label">File Attachments</div>
+                    <div class="stat-value" id="statAttachments">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">&#9889;</div>
+                    <div class="stat-label">System Status</div>
+                    <div class="stat-value" style="font-size:18px;margin-top:6px;">
+                        <span class="badge badge-green">Online</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Quick Access</h3>
+                <div class="actions">
+                    <a href="/api/articles" target="_blank" class="btn btn-primary btn-sm">Browse Articles</a>
+                    <a href="/api/attachments" target="_blank" class="btn btn-outline btn-sm">View Attachments</a>
+                    <a href="/swagger-ui/index.html" target="_blank" class="btn btn-outline btn-sm">API Guide</a>
+                    <a href="/h2-console" target="_blank" class="btn btn-outline btn-sm">Database</a>
+                </div>
+            </div>
+            <div class="card">
+                <h3>API Endpoints</h3>
+                <ul>
+                    <li><span class="badge badge-blue">GET</span> <a href="/api/articles" target="_blank">/api/articles</a> &mdash; All knowledge articles</li>
+                    <li><span class="badge badge-blue">GET</span> <a href="/api/articles/search?q=database" target="_blank">/api/articles/search?q=</a> &mdash; Search articles</li>
+                    <li><span class="badge badge-blue">GET</span> <a href="/api/users" target="_blank">/api/users</a> &mdash; Team directory</li>
+                    <li><span class="badge badge-blue">GET</span> <a href="/api/attachments" target="_blank">/api/attachments</a> &mdash; File list</li>
+                    <li><span class="badge badge-blue">GET</span> <a href="/api/attachments/download?path=api-specification-v2.txt" target="_blank">/api/attachments/download?path=</a> &mdash; Download files</li>
+                    <li><span class="badge badge-green">POST</span> /api/attachments/upload &mdash; Upload new file</li>
+                    <li><span class="badge badge-blue">GET</span> <a href="/v3/api-docs" target="_blank">/v3/api-docs</a> &mdash; OpenAPI specification</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Recent Knowledge Articles</h3>
+                <ul id="recentArticles">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    fetch('/api/articles/count').then(r=>r.text()).then(v=>document.getElementById('statArticles').textContent=v).catch(()=>{});
+    fetch('/api/users/count').then(r=>r.text()).then(v=>document.getElementById('statUsers').textContent=v).catch(()=>{});
+    fetch('/api/attachments').then(r=>r.json()).then(list=>{
+        document.getElementById('statAttachments').textContent = list.length;
+    }).catch(()=>{});
+    fetch('/api/articles').then(r=>r.json()).then(articles=>{
+        const el = document.getElementById('recentArticles');
+        if (!articles || articles.length === 0) { el.innerHTML = '<li>No articles published yet.</li>'; return; }
+        el.innerHTML = articles.slice(0, 8).map(a =>
+            '<li><a href="/api/articles/' + a.id + '" target="_blank">' + a.title + '</a></li>'
+        ).join('');
+    }).catch(()=>{});
+</script>
 </body>
 </html>
